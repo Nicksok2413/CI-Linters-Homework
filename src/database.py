@@ -12,9 +12,12 @@ def get_async_engine(database_url: str):
 
 def get_async_session(_async_engine):
     """Создает и возвращает async_session для заданного _async_engine."""
-    return sessionmaker(
-        bind=_async_engine, class_=AsyncSession, expire_on_commit=False
+    session = sessionmaker(
+        bind=_async_engine, 
+        class_=AsyncSession, 
+        expire_on_commit=False
     )
+    return session
 
 
 # Создаем test_async_engine
