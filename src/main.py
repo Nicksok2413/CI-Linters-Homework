@@ -1,10 +1,10 @@
-from typing import AsyncIterator, Sequence
+from contextlib import asynccontextmanager
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from contextlib import asynccontextmanager
+from typing import AsyncIterator, Sequence
 
-from src.database import async_engine, async_session, Base
+from src.database import Base, async_engine, async_session
 from src.models import Recipe
 from src.schemas import RecipeIn, RecipeOut, RecipesOut
 
