@@ -32,7 +32,6 @@ jobs:
 
       - name: Run linters
         run: |
-          # pip install black flake8 flake8-bugbear flake8-pie isort mypy
           black --check --diff src/
           isort --check-only --diff src/
           flake8 src/
