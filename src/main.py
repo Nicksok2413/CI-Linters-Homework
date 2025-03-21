@@ -32,9 +32,11 @@ async def get_db() -> AsyncSession:
     "/recipes",
     response_model=list[RecipesOut],
     summary="Get all recipes",
-    description="Returns a list of all recipes sorted by views and cooking time.",
+    description="Returns a list of recipes sorted by views & cooking time.",
 )
-async def get_all_recipes(db: AsyncSession = Depends(get_db)) -> Sequence[Recipe]:
+async def get_all_recipes(
+    db: AsyncSession = Depends(get_db)
+) -> Sequence[Recipe]:
     result = await db.execute(
         select(Recipe).order_by(Recipe.views.desc(), Recipe.cooking_time)
     )
@@ -69,7 +71,9 @@ async def get_recipe_by_id(
     summary="Add a new recipe",
     description="Creates a new recipe in the database.",
 )
-async def add_recipe(recipe: RecipeIn, db: AsyncSession = Depends(get_db)) -> Recipe:
+async def add_recipe(
+    recipe: RecipeIn, db: AsyncSession = Depends(get_db)
+) -> Recipe:
     new_recipe = Recipe(**recipe.model_dump())
     db.add(new_recipe)
     await db.commit()
