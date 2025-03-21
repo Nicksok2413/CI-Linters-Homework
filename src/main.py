@@ -1,12 +1,12 @@
 from typing import AsyncIterator, Sequence
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from contextlib import asynccontextmanager
 
+from src.database import async_engine, async_session, Base
 from src.models import Recipe
 from src.schemas import RecipeIn, RecipeOut, RecipesOut
-from src.database import Base, async_engine, async_session
 
 
 @asynccontextmanager
