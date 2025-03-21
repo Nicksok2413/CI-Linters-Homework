@@ -1,0 +1,13 @@
+aiosqlite==0.21.0
+black==25.1.0
+fastapi==0.115.11
+flake8==7.1.2
+flake8-bugbear==24.12.12
+flake8-pie==0.16.0
+httpx==0.28.1
+mypy==1.15.0
+pydantic==2.10.6
+pytest==8.3.5
+pytest-asyncio==0.25.3
+SQLAlchemy==2.0.39
+uvicorn==0.34.0
