@@ -31,10 +31,12 @@ async def get_db() -> AsyncSession:
     "/recipes",
     response_model=list[RecipesOut],
     summary="Get all recipes",
-    description="Returns a list of all recipes sorted by views and cooking time."
+    description="Returns a list of all recipes sorted by views and cooking time.",
 )
 async def get_all_recipes(db: AsyncSession = Depends(get_db)) -> Sequence[Recipe]:
-    result = await db.execute(select(Recipe).order_by(Recipe.views.desc(), Recipe.cooking_time))
+    result = await db.execute(
+        select(Recipe).order_by(Recipe.views.desc(), Recipe.cooking_time)
+    )
     recipes = result.scalars().all()
     return recipes
 
@@ -43,9 +45,11 @@ async def get_all_recipes(db: AsyncSession = Depends(get_db)) -> Sequence[Recipe
     "/recipes/{recipe_id}",
     response_model=RecipeOut,
     summary="Get recipe by ID",
-    description="Returns detailed information about a specific recipe."
+    description="Returns detailed information about a specific recipe.",
 )
-async def get_recipe_by_id(recipe_id: int, db: AsyncSession = Depends(get_db)) -> Recipe:
+async def get_recipe_by_id(
+    recipe_id: int, db: AsyncSession = Depends(get_db)
+) -> Recipe:
     result = await db.execute(select(Recipe).filter(recipe_id == Recipe.id))
     recipe = result.scalars().one_or_none()
 
@@ -62,7 +66,7 @@ async def get_recipe_by_id(recipe_id: int, db: AsyncSession = Depends(get_db)) -
     "/recipes",
     response_model=RecipeOut,
     summary="Add a new recipe",
-    description="Creates a new recipe in the database."
+    description="Creates a new recipe in the database.",
 )
 async def add_recipe(recipe: RecipeIn, db: AsyncSession = Depends(get_db)) -> Recipe:
     new_recipe = Recipe(**recipe.model_dump())
