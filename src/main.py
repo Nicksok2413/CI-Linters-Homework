@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from typing import AsyncIterator, AsyncGenerator, Sequence
+from typing import AsyncGenerator, AsyncIterator, Sequence
 
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import update
@@ -50,7 +50,7 @@ async def get_all_recipes(db: AsyncSession = Depends(get_db)) -> Sequence[Recipe
     description="Returns detailed information about a specific recipe.",
 )
 async def get_recipe_by_id(
-        recipe_id: int, db: AsyncSession = Depends(get_db)
+    recipe_id: int, db: AsyncSession = Depends(get_db)
 ) -> Recipe:
     result = await db.execute(select(Recipe).filter(Recipe.id == recipe_id))
     recipe = result.scalars().one_or_none()
@@ -60,9 +60,7 @@ async def get_recipe_by_id(
 
     # Обновляем количество просмотров в БД
     await db.execute(
-        update(Recipe)
-        .where(Recipe.id == recipe_id)
-        .values(views=Recipe.views + 1)
+        update(Recipe).where(Recipe.id == recipe_id).values(views=Recipe.views + 1)
     )
     await db.commit()
 
