@@ -75,9 +75,7 @@ async def test_add_recipe(client, db_session):
     assert data["cooking_time"] == 50
 
     # Проверяем, что рецепт добавлен в базу данных
-    result = await db_session.execute(
-        select(Recipe).filter(Recipe.id == data["id"])
-    )
+    result = await db_session.execute(select(Recipe).filter(Recipe.id == data["id"]))
     recipe = result.scalars().first()
     assert recipe is not None
     assert recipe.dish_name == "New Dish"

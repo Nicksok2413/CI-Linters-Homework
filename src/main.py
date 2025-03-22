@@ -51,10 +51,7 @@ async def get_all_recipes(db: AsyncSession = get_db_dep) -> Sequence[Recipe]:
     summary="Get recipe by ID",
     description="Returns detailed information about a specific recipe.",
 )
-async def get_recipe_by_id(
-        recipe_id: int,
-        db: AsyncSession = get_db_dep
-) -> Recipe:
+async def get_recipe_by_id(recipe_id: int,db: AsyncSession = get_db_dep) -> Recipe:
     result = await db.execute(select(Recipe).filter(Recipe.id == recipe_id))
     recipe = result.scalars().one_or_none()
 
@@ -63,9 +60,7 @@ async def get_recipe_by_id(
 
     # Обновляем количество просмотров в БД
     await db.execute(
-        update(Recipe)
-        .where(Recipe.id == recipe_id)
-        .values(views=Recipe.views + 1)
+        update(Recipe).where(Recipe.id == recipe_id).values(views=Recipe.views + 1)
     )
     await db.commit()
 
@@ -81,10 +76,7 @@ async def get_recipe_by_id(
     summary="Add a new recipe",
     description="Creates a new recipe in the database.",
 )
-async def add_recipe(
-        recipe: RecipeIn,
-        db: AsyncSession = get_db_dep
-) -> Recipe:
+async def add_recipe(recipe: RecipeIn,db: AsyncSession = get_db_dep) -> Recipe:
     new_recipe = Recipe(**recipe.model_dump())
     db.add(new_recipe)
     await db.commit()
