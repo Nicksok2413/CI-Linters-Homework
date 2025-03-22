@@ -8,10 +8,18 @@ from src.models import Recipe
 @pytest.mark.asyncio
 async def test_get_all_recipes(client, db_session):
     # Добавляем тестовые данные
-    recipe_1 = Recipe(dish_name="Test Dish 1", cooking_time=30, ingredients="Ing1, Ing2",
-                      description="Test Description 1")
-    recipe_2 = Recipe(dish_name="Test Dish 2", cooking_time=40, ingredients="Ing3, Ing4",
-                      description="Test Description 2")
+    recipe_1 = Recipe(
+        dish_name="Test Dish 1",
+        cooking_time=30,
+        ingredients="Ing1, Ing2",
+        description="Test Description 1",
+    )
+    recipe_2 = Recipe(
+        dish_name="Test Dish 2",
+        cooking_time=40,
+        ingredients="Ing3, Ing4",
+        description="Test Description 2",
+    )
     db_session.add(recipe_1)
     db_session.add(recipe_2)
     await db_session.commit()
@@ -30,7 +38,12 @@ async def test_get_all_recipes(client, db_session):
 @pytest.mark.asyncio
 async def test_get_recipe_by_id(client, db_session):
     # Добавляем тестовые данные
-    recipe = Recipe(dish_name="Test Dish", cooking_time=30, ingredients="Ing1, Ing2", description="Test Description")
+    recipe = Recipe(
+        dish_name="Test Dish",
+        cooking_time=30,
+        ingredients="Ing1, Ing2",
+        description="Test Description",
+    )
     db_session.add(recipe)
     await db_session.commit()
 
@@ -51,7 +64,7 @@ async def test_add_recipe(client, db_session):
         "dish_name": "New Dish",
         "cooking_time": 50,
         "ingredients": "Ing5, Ing6",
-        "description": "New Description"
+        "description": "New Description",
     }
 
     # Выполняем запрос
