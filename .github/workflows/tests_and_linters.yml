@@ -60,6 +60,10 @@ jobs:
           name: python-env
           path: venv
 
+      - name: Fix permissions
+        run: |
+          chmod -R +x venv/bin
+
       - name: Activate virtual environment
         run: echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
 
@@ -85,6 +89,10 @@ jobs:
         with:
           name: python-env
           path: venv
+
+      - name: Fix permissions
+        run: |
+          chmod -R +x venv/bin
 
       - name: Activate virtual environment
         run: echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
@@ -112,6 +120,10 @@ jobs:
           name: python-env
           path: venv
 
+      - name: Fix permissions
+        run: |
+          chmod -R +x venv/bin
+
       - name: Activate virtual environment
         run: echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
 
@@ -138,6 +150,10 @@ jobs:
           name: python-env
           path: venv
 
+      - name: Fix permissions
+        run: |
+          chmod -R +x venv/bin
+
       - name: Activate virtual environment
         run: echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
 
@@ -163,6 +179,10 @@ jobs:
         with:
           name: python-env
           path: venv
+
+      - name: Fix permissions
+        run: |
+          chmod -R +x venv/bin
 
       - name: Activate virtual environment
         run: echo "VIRTUAL_ENV=$GITHUB_WORKSPACE/venv" >> $GITHUB_ENV
