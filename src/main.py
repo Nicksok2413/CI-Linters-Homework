@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
-from typing import AsyncIterator, Sequence
+from typing import AsyncGenerator, AsyncIterator, Sequence
 
 from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
@@ -23,9 +24,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 app = FastAPI(lifespan=lifespan)
 
 
-async def get_db() -> AsyncSession:
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with async_session() as session:
         yield session
+
+
+get_db_dep = Depends(get_db)
 
 
 @app.get(
@@ -34,12 +38,11 @@ async def get_db() -> AsyncSession:
     summary="Get all recipes",
     description="Returns a list of recipes sorted by views & cooking time.",
 )
-async def get_all_recipes(db: AsyncSession = Depends(get_db)) -> Sequence[Recipe]:
+async def get_all_recipes(db: AsyncSession = get_db_dep) -> Sequence[Recipe]:
     result = await db.execute(
         select(Recipe).order_by(Recipe.views.desc(), Recipe.cooking_time)
     )
-    recipes = result.scalars().all()
-    return recipes
+    return result.scalars().all()
 
 
 @app.get(
@@ -48,19 +51,23 @@ async def get_all_recipes(db: AsyncSession = Depends(get_db)) -> Sequence[Recipe
     summary="Get recipe by ID",
     description="Returns detailed information about a specific recipe.",
 )
-async def get_recipe_by_id(
-    recipe_id: int, db: AsyncSession = Depends(get_db)
-) -> Recipe:
-    result = await db.execute(select(Recipe).filter(recipe_id == Recipe.id))
+async def get_recipe_by_id(recipe_id: int, db: AsyncSession = get_db_dep) -> Recipe:
+    result = await db.execute(select(Recipe).filter(Recipe.id == recipe_id))
     recipe = result.scalars().one_or_none()
 
     if recipe is None:
         raise HTTPException(status_code=404, detail="Recipe not found")
 
-    recipe.views += 1
+    # Обновляем количество просмотров в БД
+    await db.execute(
+        update(Recipe).where(Recipe.id == recipe_id).values(views=Recipe.views + 1)
+    )
     await db.commit()
-    await db.refresh(recipe)
-    return recipe
+
+    # Повторно загружаем обновленный рецепт
+    result = await db.execute(select(Recipe).filter(Recipe.id == recipe_id))
+
+    return result.scalars().one()
 
 
 @app.post(
@@ -69,7 +76,7 @@ async def get_recipe_by_id(
     summary="Add a new recipe",
     description="Creates a new recipe in the database.",
 )
-async def add_recipe(recipe: RecipeIn, db: AsyncSession = Depends(get_db)) -> Recipe:
+async def add_recipe(recipe: RecipeIn, db: AsyncSession = get_db_dep) -> Recipe:
     new_recipe = Recipe(**recipe.model_dump())
     db.add(new_recipe)
     await db.commit()

@@ -1,8 +1,9 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from src.main import get_db, app as main_app
 from src.database import Base, get_async_engine, get_async_session
+from src.main import app as main_app
+from src.main import get_db
 
 # Устанавливаем URL для тестовой базы данных
 TEST_DATABASE_URL = "sqlite+aiosqlite:///./test_app.db"
